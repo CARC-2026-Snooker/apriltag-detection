@@ -1,5 +1,8 @@
 import cv2
 import numpy as np
+import os
+import sys
+import time
 
 def main():
     # --- 1. CONFIGURATION ---
@@ -29,11 +32,20 @@ def main():
     print("Press 'c' to capture a frame when the checkerboard is detected.")
     print("Press 'q' to finish capturing and calculate the calibration.")
     
-    cap = cv2.VideoCapture(0)
-    
+    if sys.platform.startswith('win'):
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    else:
+        cap = cv2.VideoCapture(0, cv2.CAP_V4L2) # Best for Raspberry Pi / Linux
+
     if not cap.isOpened():
-        print("Error: Could not open camera.")
-        return
+        raise IOError("Webcam could not be opened.")
+
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+
+    for _ in range(5):
+        cap.read()
+        time.sleep(0.1)
 
     captured_frames = 0
 
@@ -41,6 +53,8 @@ def main():
         ret, frame = cap.read()
         if not ret:
             break
+
+        # frame = cv2.flip(frame, -1)
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -61,6 +75,8 @@ def main():
             cv2.putText(frame, "Checkerboard NOT detected", (10, 30), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
+        cv2.namedWindow('Camera Calibration', cv2.WINDOW_NORMAL)
+        cv2.resizeWindow('Camera Calibration', 800, 450)
         cv2.imshow('Camera Calibration', frame)
 
         key = cv2.waitKey(1) & 0xFF

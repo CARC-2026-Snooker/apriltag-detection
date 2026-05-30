@@ -17,7 +17,7 @@ KNOWN_TAGS = {
     1: {"x": 0.512, "y": 0, "facing_angle": 270},
     2: {"x": 0.88, "y": 0, "facing_angle": 270},
     3: {"x": 1.197, "y": 0, "facing_angle": 270},
-    4: {"x": 1.509, "y": 0, "facing_angle": 270},
+    4: {"x": 0, "y": 0, "facing_angle": 270},
     5: {"x": 0, "y": 0, "facing_angle": 270},
     # Add all your competition tags here!
 }
